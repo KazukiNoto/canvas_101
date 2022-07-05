@@ -1,0 +1,106 @@
+<body></body>
+<style>
+    body {
+
+        /* 背景色を暗めにする */
+        background-color: #202020;
+
+        /* 直下の要素を中央に配置する */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        /* 隙間を潰す */
+        margin: 0;
+
+    }
+
+    canvas {
+
+        /* ページ内に収まるようにする */
+        max-width: 100vw;
+        max-height: 100vh;
+
+    }
+</style>
+<script>
+
+    // canvas 要素の作成
+    const canvas = document.createElement('canvas');
+    document.body.appendChild(canvas);
+
+    // キャンバスのサイズ設定
+    canvas.setAttribute('width', 1280);
+    canvas.setAttribute('height', 792);
+
+    // context の作成
+    const context = canvas.getContext('2d');
+
+    // キャンバスの背景設定
+    context.fillStyle = '#ffffff';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    // ランダムで変数を設定
+    const rand_1 = Math.floor(Math.random() * (6 - 3) + 3);
+
+    const red_1 = Math.floor(Math.random() * (255 - 0) + 0);
+    const green_1 = Math.floor(Math.random() * (255 - 0) + 0);
+    const blue_1 = Math.floor(Math.random() * (255 - 0) + 0);
+    const op_1 = Math.random();
+
+    const red_2 = Math.floor(Math.random() * (255 - 0) + 0);
+    const green_2 = Math.floor(Math.random() * (255 - 0) + 0);
+    const blue_2 = Math.floor(Math.random() * (255 - 0) + 0);
+    const op_2 = Math.random();
+
+    // 全体の形を決定する変数
+    const shape = Math.floor(Math.random() * (15 - 2) + 2);
+
+    // 全体の描画を決定する変数（円の形を制御しているので２固定がいいかも）
+    const draw = Math.floor(Math.random() * (2 - 2) + 2);
+
+    // 全体の模様を決定する変数
+    const pattern = Math.floor(Math.random() * (10 - 2) + 2);
+
+
+    const render = (x, y, r, level) => {
+
+        // 残りの再帰回数が 0 であれば終了
+        if (level <= 0) return;
+
+        // 現在の円を描く
+        context.beginPath();
+        context.arc(x, y, r, 0, Math.PI * 2);
+        if (level === 1) {
+            context.lineWidth = 1;
+            context.strokeStyle = `rgba(${red_1}, ${green_1}, ${blue_1}, ${op_1})`;
+            context.stroke();
+        } else if (level === 2) {
+            context.lineWidth = 2;
+            context.strokeStyle = `rgba(${red_2}, ${green_2}, ${blue_2}, ${op_2})`;
+            context.stroke();
+        }
+
+        // 現在の円の中に複数の円を描く
+        r /= pattern;
+        for (let i = 0; i < 2; i++) {
+            let v = i / 2 * Math.PI * draw;
+
+            for (let a = 0, aa = shape; a < aa; a++) {
+                let av = a * Math.PI / aa;
+                let nx = x + Math.sin(v + av) * r;
+                let ny = y + Math.cos(v + av) * r;
+
+                // 再帰する
+                render(nx, ny, r, level - 1);
+
+            }
+        }
+
+    };
+
+    render(canvas.width / 2, canvas.height / 2, canvas.height * 0.5, rand_1);
+
+// 固有部分がここに入る
+
+</script>
