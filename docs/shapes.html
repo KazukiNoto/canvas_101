@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Basic Shapes on Canvas</title>
+	<!-- <script src="main.js"></script> -->
+
+</head>
+<script src="https://cdn.jsdelivr.net/npm/p5@0.10.2/lib/p5.js"></script>
+
+<body>
+</body>
+
+</html>
+<script>
+
+	// カラーアセットを設定
+	let colors = ["#555233", "#DF921D", "#878937", "#CFC52A", "#DC2A41"];
+
+	function setup() {
+		//カンバスサイズの設定
+		createCanvas(600, 600);
+
+		//カラーモードの指定
+		//H（色相）:0-360
+		//S（彩度）:0-100
+		//B（明度）:0-100
+		//A（透明度）:0-100
+		colorMode(HSB, 360, 100, 100, 100);
+
+		//角度を弧度法から度数法に指定
+		angleMode(DEGREES);
+		//背景色を指定
+		background(0, 0, 90);
+
+		//画面上にたくさんの点を打つことで粒状感を背景に加える
+		//点の密度，個数はサイズに対して変化
+		for (let i = 0; i < width * height * 5 / 100; i++) {
+			//半透明の点，白でも黒でもOK．透明度は適宜調整する
+			stroke(0, 0, 0, 10);
+			let px = random(width);
+			let py = random(height);
+			point(px, py);
+		}
+
+		// cells^2の図を描く
+		let cells = int(random(3, 12));
+		console.log(width)
+
+		// キャンバス全体の余白を作成
+		let offset = width / 10;
+		// 要素ごとの余白を作成
+		let margin = offset / 5;
+
+		// 図形ごとの余白を考慮して、図形を描画する格子全体の幅・高さを算出
+		let w = (width - offset * 2 - margin * (cells - 1)) / cells;
+		let h = (height - offset * 2 - margin * (cells - 1)) / cells;
+
+		// 要素に影をつける
+		// 影の線をぼかす
+		drawingContext.shadowBlur = 10;
+		// 影の色を指定
+		drawingContext.shadowColor = color(50);
+		// 影の方向を指定
+		drawingContext.shadowOffsetX = 5;
+		drawingContext.shadowOffsetY = 5;
+
+
+
+		//格子状に図形を配置する
+		//１行ごとに図形を配置していって、cells分だけ配置されたら、次の行に移動する
+		console.log(`offset:${offset},margin:${margin},w:${w},h:${h}`)
+		for (let j = 0; j < cells; j++) {
+			for (let i = 0; i < cells; i++) {
+				// 図形を描画する位置を計算
+				// x方向の位置
+				let x = offset + i * (w + margin);
+				// y方向の位置
+				let y = offset + j * (h + margin);
+				// 
+				let cx = x + w / 2;
+				let cy = y + h / 2;
+				console.log(`x:${x},y:${y}`)
+				console.log(`cx:${cx},cy:${cy}`)
+
+				let d = w;
+				// 図形を回転させる回数
+				let rotate_num = int(random(4));
+				// 図形を回転させる角度(0,90,180,270のどれか) 
+				rotate_num = rotate_num * 90;
+
+				// 図形の種類をランダムに指定
+				// 0:三角形
+				// 1:四角形
+				// 2:楕円形
+				// 3:弧
+
+				let shape_num = int(random(4));
+
+				// 色を指定
+				// let c = color(random(255), random(255), random(255));
+				let c = color(random(colors));
+
+				push();
+				// 図形を移動
+				translate(cx, cy);
+				// 図形を回転
+				rotate(rotate_num);
+				if (random(100) > 50) {
+					noStroke();
+					fill(c);
+				} else {
+					noFill();
+					stroke(c);
+				}
+				// 図形を描画
+				// 三角形
+				if (shape_num == 0) {
+					triangle(-d / 2, -d / 2, d / 2, -d / 2, -d / 2, d / 2);
+					// 四角
+				} else if (shape_num == 1) {
+					// 座標基準を中央にする(0,0は中央)
+					rectMode(CENTER);
+					rect(0, 0, d, d);
+					// 円
+				} else if (shape_num == 2) {
+					ellipse(0, 0, d, d);
+					// 弧
+				} else if (shape_num == 3) {
+					arc(-d / 2, -d / 2, d * 2, d * 2, 0, 90);
+				}
+				pop();
+			}
+		}
+	}
+</script>
+
+<style>
+	body {
+
+		/* 背景色を暗めにする */
+		background-color: #202020;
+
+		/* 直下の要素を中央に配置する */
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		/* 隙間を潰す */
+		margin: 0;
+
+	}
+</style>
