@@ -4,85 +4,121 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Basic Shapes on Canvas</title>
-	<script src="main.js"></script>
+	<!-- <script src="main.js"></script> -->
 
 </head>
+<script src="https://cdn.jsdelivr.net/npm/p5@0.10.2/lib/p5.js"></script>
+
 
 <body>
-	<canvas id="myCanvas" height="500" width="500"></canvas>
+
 </body>
 
 </html>
 <script>
-	(() => {
-		// get canvas by id
-		const canvas = document.querySelector("#myCanvas")
+	// 色(p5.jsにはcolor関数があるので、cで定義)
+	let c;
 
-		const width = 500
-		const height = 500
+	// 線の長さ
+	let lineLength = 0;
+	// 角度
+	let angle = 0;
+	// x,y座標
+	let x = 0;
+	let y = 0;
 
-		canvas.width = width
-		canvas.height = height
+	// 1フレームごとに増加される線の長さ
+	let lineLengthSpeed = 0.1
+	// 1フレームごとに増加される角度
+	let angleSpeed = 100;
+	// 1フレームごとに増加されるx,y座標
+	let xSpeed = 0.1;
+	let ySpeed = 0.1;
 
-		// get 2d context of our canvas
-		const ctx = canvas.getContext("2d")
+	function setup() {
+		// キャンバスを作成
+		createCanvas(windowWidth, windowHeight);
+		// 背景色を設定
+		background(255);
+		// 線の太さを設定
+		strokeWeight(1);
+
+		c = color(181, 157, 0);
+
+	}
+
+	// 0からxまでのランダムな整数を返す
+	function genNum(x) {
+		return Math.floor(Math.random() * x);
+	}
+
+	// ランダムな色を生成
+	function genColor() {
+		return color(genNum(255), genNum(255), genNum(255));
+	}
+
+	// 似た色を生成
+	function genSimilarColor(c) {
+		let r = c.levels[0] + genNum(50) - 25;
+		let g = c.levels[1] + genNum(50) - 25;
+		let b = c.levels[2] + genNum(50) - 25;
+		return color(r, g, b);
+	}
+
+	// １フレームごとにコールされる関数
+	function draw() {
+		c = genSimilarColor(c);
+		// lineLength = random(70, 200);
+		lineLength += lineLengthSpeed;
+		push();
+		// 軸を回転させる
+		translate(x, windowHeight / 2);
+		x += xSpeed;
+		y += ySpeed;
+
+		rotate(radians(angle));
+		stroke(c);
+		line(0, 0, lineLength, 0);
+		pop();
+
+		// 角度を増やす
+		angle += angleSpeed;
 
 
-		const drawFillRect = (x, y, width, height, hexColor, ctx) => {
-			ctx.beginPath()
-			ctx.rect(x, y, width, height)
-			ctx.fillStyle = hexColor
-			ctx.fill()
-		}
+		// if (key == 's' || key == 'S') saveCanvas(gd.timestamp(), 'png');
+		// if (keyCode == DELETE || keyCode == BACKSPACE) background(255);
 
-		// background color
-		// drawFillRect(20, 20, 460, 460, "#FAFCF1", ctx)
+		// // reverse direction and mirror angle
+		// if (key == 'd' || key == 'D') {
+		// 	angle += 180;
+		// 	angleSpeed *= -1;
+		// }
 
+		// // change color
+		// if (key == ' ') c = color(random(255), random(255), random(255), random(80, 100));
+		// // default colors from 1 to 4
+		// if (key == '1') c = genSimilarColor(color(181, 157, 0));
+		// if (key == '2') c = color(0, 130, 164);
+		// if (key == '3') c = color(87, 35, 129);
+		// if (key == '4') c = color(197, 0, 123);
+	}
 
-		// ランダムにrgba値を生成
-		const randomColor = () => {
-			// 0~255までの値をランダム生成
-			const colorValue = () => { return Math.floor(Math.random() * (255 - 0) + 0) }
-			const opacity = Math.random()
-
-			return `rgba(${colorValue()}, ${colorValue()}, ${colorValue()}, ${opacity})`
-		}
-
-
-
-
-		// rectangle at the center
-		drawFillRect((width / 2) - 100, (height / 2) - 150, 200, 300, randomColor(), ctx)
-
-
-		// rectangle 2
-		drawFillRect(280, 20, 120, 190, "#E97FF4", ctx)
-
-		// circle 1
-		ctx.beginPath()
-		ctx.arc(347, 260, 50, 0, 2 * Math.PI)
-		ctx.fillStyle = randomColor()
-		ctx.fill()
-
-		// rectangle 3
-		drawFillRect(80, 300, 100, 110, "#A4F3F8", ctx)
-
-		// triangle
-		ctx.beginPath();
-		ctx.moveTo(250, 400);
-		ctx.lineTo(200, 450);
-		ctx.lineTo(300, 450);
-		ctx.closePath()
-		ctx.fillStyle = "#B6FAC1"
-		ctx.fill();
-
-
-	})()
 
 </script>
 
 <style>
-	#myCanvas {
-		/* border: 2px dotted black; */
+	body {
+
+		/* 背景色を暗めにする */
+		background-color: #202020;
+
+		/* 直下の要素を中央に配置する */
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		/* 隙間を潰す */
+		margin: 0;
+
 	}
 </style>

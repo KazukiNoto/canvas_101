@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Basic Shapes on Canvas</title>
+	<!-- <script src="main.js"></script> -->
+
+</head>
+<script src="https://cdn.jsdelivr.net/npm/p5@0.10.2/lib/p5.js"></script>
+
+<body>
+</body>
+
+</html>
+<script>
+
+	function setup() {
+		// キャンバスを作成
+		createCanvas(windowWidth / 2, windowHeight);
+		// 背景色を設定
+		background(245);
+		noStroke()
+
+		for (let i = 0; i < 500; i++) {
+			let x = random(width)
+			let y = random(height)
+
+			// 直径を定義
+			let diameter = random(y / 10.0)
+
+			// 塗りつぶしの色を赤系の色でランダム生成
+			fill(random(127, 255), random(0, 127), random(0, 31), 227)
+			// xとyの位置に直径diameterの円を描く
+			ellipse(x, y, diameter, diameter)
+		}
+	}
+</script>
+
+<style>
+	body {
+
+		/* 背景色を暗めにする */
+		background-color: #202020;
+
+		/* 直下の要素を中央に配置する */
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		/* 隙間を潰す */
+		margin: 0;
+
+	}
+</style>
