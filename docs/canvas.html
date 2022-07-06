@@ -1,0 +1,158 @@
+<body></body>
+<style>
+    body {
+
+        /* 背景色を暗めにする */
+        background-color: #202020;
+
+        /* 直下の要素を中央に配置する */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        /* 隙間を潰す */
+        margin: 0;
+
+    }
+
+    canvas {
+
+        /* ページ内に収まるようにする */
+        max-width: 100vw;
+        max-height: 100vh;
+
+    }
+</style>
+<script>
+
+    // canvas 要素の作成
+    const canvas = document.createElement('canvas');
+    document.body.appendChild(canvas);
+
+    // キャンバスのサイズ設定
+    const width = 1280
+    const height = 792
+
+    canvas.width = width
+    canvas.height = height
+
+    // context の作成
+    const context = canvas.getContext('2d');
+
+    // キャンバスの背景設定
+    context.fillStyle = '#ffffff';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    // ランダムで変数を設定
+    const rand_1 = Math.floor(Math.random() * (6 - 3) + 3);
+
+    // 全体の描画を決定する変数（円の形を制御しているので２固定がいいかも）
+    const draw = Math.floor(Math.random() * (2 - 2) + 2);
+
+    // 全体の模様を決定する変数
+    const pattern = Math.floor(Math.random() * (10 - 2) + 2);
+
+    // 0~numまでのランダム値を算出
+    const randomNumber = (to, from = 0) => {
+        return Math.floor(Math.random() * (to - from) + from);
+    }
+
+    // ランダムにrgba値を生成
+    const randomColor = () => {
+        const opacity = Math.random()
+        return `rgba(${randomNumber(255)}, ${randomNumber(255)}, ${randomNumber(255)}, ${opacity})`
+    }
+
+    // 図ごとの色を作成
+    const circleColor = randomColor()
+    const triangleColor = randomColor()
+    const squareColor = randomColor()
+    console.log(circleColor)
+    console.log(triangleColor)
+    console.log(squareColor)
+
+    const render = (x, y, r, level) => {
+        console.log("level", level)
+
+        // 残りの再帰回数が 0 であれば終了
+        if (level <= 0) return;
+        console.log(level <= 0)
+
+
+        for (let i = 0; i < 2; i++) {
+            // 丸・三角・四角をランダムに描画
+            const shapes = ["circle", "triangle", "square"]
+            // ランダムにインデックスを算出
+            // const randomIndex = randomNumber(2, 2)
+            const randomIndex = randomNumber(0, shapes.length)
+            // 丸を描画
+            if (shapes[randomIndex] === "circle") circle(context, x, y, r, level)
+            // 三角
+            else if (shapes[randomIndex] === "triangle") triangle(context)
+            // 四角
+            else square(context)
+            console.log(shapes[randomIndex])
+
+        }
+    };
+
+    // 丸を描画(１回呼ばれると)
+    const circle = (ctx, x, y, r, level, color = randomColor()) => {
+        console.log(color)
+        // 現在の円を描く
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = color;
+        ctx.stroke();
+
+        // 現在の円の中に複数の円を描く
+        r /= pattern;
+        for (let i = 0; i < 1; i++) {
+            let v = i / 2 * Math.PI * draw;
+
+            for (let a = 0, aa = 8; a < aa; a++) {
+                let av = a * Math.PI / aa;
+                let nx = x + Math.sin(v + av) * r;
+                let ny = y + Math.cos(v + av) * r;
+                console.log("level", level)
+                // 再帰する
+                render(nx, ny, r, level - 1);
+
+            }
+        }
+    }
+
+    //四角を描画
+    const drawFillRect = (x, y, width, height, color, ctx) => {
+        ctx.beginPath()
+        // 配置に規則性を持たせるときれいになるはず
+        ctx.rect(x, y, width, height)
+        ctx.fillStyle = color
+        ctx.stroke()
+    }
+    // 四角を描画
+    const square = (ctx, color = randomColor()) => {
+        console.log(color)
+        drawFillRect(randomNumber(canvas.width), randomNumber(canvas.height), randomNumber(canvas.width), randomNumber(canvas.height), color, ctx)
+    }
+
+    // 三角を描画
+    const triangle = (ctx, color = randomColor()) => {
+        ctx.beginPath();
+        // 配置に規則性を持たせるときれいになるはず
+        ctx.moveTo(randomNumber(canvas.width), randomNumber(canvas.height));
+        ctx.lineTo(randomNumber(canvas.width), randomNumber(canvas.height));
+        ctx.lineTo(randomNumber(canvas.width), randomNumber(canvas.height));
+        ctx.closePath()
+        ctx.fillStyle = color
+        ctx.stroke();
+    }
+
+    console.log("render called.")
+    render(canvas.width / 2, canvas.height / 2, canvas.height * 0.5, rand_1);
+
+
+// 固有部分がここに入る
+
+</script>
