@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Sample WebGL Page</title>
+
+</head>
+<script src="https://cdn.jsdelivr.net/npm/p5@0.10.2/lib/p5.js"></script>
+
+<body>
+	<div id="processing"></div>
+</body>
+
+</html>
+<script>
+
+
+	// See https://www.youtube.com/watch?v=BrFZ5RkywcY
+	// The Coding Train: Q&A #2: What is WEBGL in p5.js?
+	let angle = 0;
+
+	function setup() {
+		createCanvas(windowWidth, windowHeight, WEBGL);
+	}
+
+	function draw() {
+		rotateX(angle);
+		rotateY(angle * 0.05);
+		angle += 0.1;
+
+		// 背景色
+		background(250, 200, 200);
+		// R,G,B,x,y,z
+		directionalLight(255, 255, 255, 0, 0, -1);
+		// 環境光(すべての場所でこの色が適用される)
+		ambientLight(150);
+
+		// 角度を更新
+		rotateX(millis() / 3000);
+		rotateY(millis() / 1000);
+		noStroke();
+		// 色指定
+		fill(230, 180, 100);
+		// リング自体の大きさ、チューブの半径、x軸を角の数、y軸の角の数
+		torus(150, 60, 60, 40);
+	}
+
+</script>
+
+<style>
+	body {
+		/* 余白削除 */
+		margin: 0;
+	}
+</style>
