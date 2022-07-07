@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Sample Login Page</title>
+	<!-- <script src="main.js"></script> -->
+
+</head>
+<script src="https://cdn.jsdelivr.net/npm/p5@0.10.2/lib/p5.js"></script>
+
+<body>
+	<div class="wrapper">
+		<div class="card">
+			<!-- ログインフォーム -->
+			<form>
+				<div class="form-group form-layout">
+					<input type="text" id="username" name="username" placeholder="Username">
+				</div>
+				<div class="form-group">
+					<input type="password" id="password" name="password" placeholder="Password">
+				</div>
+				<div class="form-group">
+					<button type="button" id="login" class="btn-primary">ログイン</button>
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+</body>
+
+</html>
+<script>
+	// ログインボタンフラグ
+	let isLoginBtnPressed = false;
+	// イージング
+	let easing = 0;
+	// 要素の色
+	const color = [92, 107, 192, 90];
+	// 位置ベクトル
+	let vecLocation = [];
+	// 速度ベクトル
+	let vecVelocity = [];
+	// 要素数
+	const NUM = 200
+
+	// loginボタンにクリックイベントを追加
+	let newButton = document.getElementById('login');
+	newButton.addEventListener("click", clickMe);
+
+	// loginボタンを押したときの処理
+	function clickMe() {
+		isLoginBtnPressed = true
+	}
+
+	// ウィンドウの大きさが変化したとき
+	function windowResized() {
+		resizeCanvas(windowWidth, windowHeight);
+		background(255);//再描画後に背景を再描画する
+	}
+
+	// 1回のみ行うsetup処理
+	function setup() {
+		// キャンバスを作成
+		canvas = createCanvas(windowWidth, windowHeight);
+		//canvasをページの原点に固定
+		canvas.position(0, 0);
+		//canvasを後ろに移動する
+		canvas.style('z-index', '-1');
+		// フレームレートを設定
+		frameRate(144)
+		background(255);
+
+		// 図形の設定
+		for (let i = 0; i < NUM; i++) {
+			// ランダムに色指定
+			fill(...color);
+			// 配置指定(x,y)
+			vecLocation[i] = createVector(random(width), random(height * 2));
+			// 速度指定(x,y)
+			vecVelocity[i] = createVector(random(-0.1, 0.1), random(-0.1, 0.1));
+
+		}
+	}
+	// フレーム毎の処理
+	function draw() {
+		// 背景色設定
+		background(255);
+		// 要素の枠線を削除
+		noStroke();
+		// ログインボタンが押されるまで
+		if (isLoginBtnPressed === false) {
+			generateRandomElement()
+		}
+		// ログインボタンが押された後
+		else {
+			upAllElement()
+		}
+
+	}
+	// 図形を生成してふわふわさせる
+	function generateRandomElement() {
+		for (let i = 0; i < NUM; i++) {
+			// 座標を更新
+			ellipse(vecLocation[i].x, vecLocation[i].y, 20, 20);
+			// ベクトルを増加させる
+			vecLocation[i].add(vecVelocity[i]);
+
+			// 画面外に出たら画面内に戻す
+			if (vecLocation[i].x > width || vecLocation[i].x < 0) {
+				vecVelocity[i].x = vecVelocity[i].x * -1;
+			}
+			if (vecLocation[i].y > height || vecLocation[i].y < 0) {
+				vecVelocity[i].y = vecVelocity[i].y * -1;
+			}
+		}
+	}
+	// 前図形を上に上げる
+	function upAllElement() {
+		easing += 0.05
+		for (let i = 0; i < NUM; i++) {
+			if (vecLocation[i].y > -100) {
+				vecLocation[i].y = vecLocation[i].y - 10 * easing;
+			}
+			if (vecLocation[i].x > width / 2) {
+				vecLocation[i].x = vecLocation[i].x - 0.5 * easing;
+			}
+			if (vecLocation[i].x < width / 2) {
+				vecLocation[i].x = vecLocation[i].x + 0.5 * easing;
+			}
+			// 座標を更新
+			ellipse(vecLocation[i].x, vecLocation[i].y, 20, 20);
+			// ベクトルを増加させる
+			vecLocation[i].add(vecVelocity[i]);
+		}
+	}
+</script>
+
+<style>
+	body {
+		/* 余白削除 */
+		margin: 0;
+	}
+
+	/* 上下中央配置 */
+	.wrapper {
+		height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	/* フォーム */
+	.form-group {
+		margin-top: 12px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+
+	/* ボタン */
+	.btn-primary {
+		margin-top: 12px;
+		min-width: 110px;
+		min-height: 32px;
+		border-radius: 16px;
+		background-color: #5C6BC0;
+		color: #ffffff;
+		border: none;
+		cursor: pointer;
+
+	}
+
+	/* カード */
+	.card {
+		width: 400px;
+		height: 240px;
+		border-radius: 8px;
+		background-color: #ffffff;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 1px 4px 10px rgba(0, 0, 0, 0.3);
+	}
+</style>
